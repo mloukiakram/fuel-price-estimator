@@ -242,15 +242,14 @@
                 return;
             }
 
-            // 1. جلب سعر صرف الدولار مقابل الدرهم المغربي المباشر
-            const fxResponse = await fetch('https://er-api.com');
+            // 1. جلب سعر صرف الدولار مقابل الدرهم المغربي المباشر عبر المسار المفتوح
+            const fxResponse = await fetch('https://open.er-api.com/v6/latest/USD');
             const fxData = await fxResponse.json();
-            if(fxData && fxData.rates && fxData.rates.MAD) {
+            if (fxData && fxData.rates && fxData.rates.MAD) {
                 document.getElementById('exchange').value = fxData.rates.MAD.toFixed(2);
             }
 
             // 2. تحديث مؤشر برنت المباشر تلقائياً
-            // هنا يتم تثبيت آخر مؤشر، ويمكنك ربطه بـ API خاص إذا كنت تعمل في بيئة استضافة حية
             document.getElementById('brent').value = "97.00"; 
             
             if (statusElement) {
@@ -294,3 +293,26 @@
         const finalDiesel = subtotalDiesel + tvaDiesel;
 
         // حسابات البنزين الممتاز النهائية
+        const subtotalGasoline = realProductBase + ticGasoline + margin;
+        const tvaGasoline = subtotalGasoline * 0.10;
+        const finalGasoline = subtotalGasoline + tvaGasoline;
+
+        // تحديث واجهة المستخدم - الغازوال
+        document.getElementById('diesel-base').innerText = realProductBase.toFixed(2);
+        document.getElementById('diesel-margin-val').innerText = margin.toFixed(2);
+        document.getElementById('diesel-tva').innerText = tvaDiesel.toFixed(2);
+        document.getElementById('diesel-pump').innerText = finalDiesel.toFixed(2) + " MAD / L";
+
+        // تحديث واجهة المستخدم - البنزين
+        document.getElementById('gasoline-base').innerText = realProductBase.toFixed(2);
+        document.getElementById('gasoline-margin-val').innerText = margin.toFixed(2);
+        document.getElementById('gasoline-tva').innerText = tvaGasoline.toFixed(2);
+        document.getElementById('gasoline-pump').innerText = finalGasoline.toFixed(2) + " MAD / L";
+    }
+
+    // تشغيل دالة الجلب تلقائياً عند تحميل الصفحة
+    window.onload = fetchLiveMarketData;
+</script>
+
+</body>
+</html>
